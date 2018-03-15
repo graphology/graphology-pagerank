@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/graphology/graphology-pagerank.svg)](https://travis-ci.org/graphology/graphology-pagerank)
 
-# Graphology Utils
+# Graphology Pagerank Algorithm
 
 Pagerank algorithm for [`graphology`](https://graphology.github.io).
 
