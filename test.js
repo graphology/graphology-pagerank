@@ -77,4 +77,12 @@ describe('graphology-pagerank', function() {
     for (var k in test)
       assert.approximately(graph.getNodeAttribute(k, 'pagerank'), test[k], 1e-3);
   });
+
+  it('should throw when failing to converge.', function() {
+    var graph = getDirectedGraph();
+
+    assert.throws(function() {
+      pagerank(graph, {maxIterations: 0});
+    }, /converge/);
+  });
 });
