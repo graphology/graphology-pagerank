@@ -22,7 +22,7 @@ const p = pagerank(graph);
 pagerank.assign(graph);
 
 // Note that you can also pass options to customize the algorithm:
-const p = pagerank(graph, {alpha: 0.9, tolerance: })
+const p = pagerank(graph, {alpha: 0.9, weighted: false})
 ```
 
 ## Arguments
