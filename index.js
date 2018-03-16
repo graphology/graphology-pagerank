@@ -20,7 +20,7 @@ var DEFAULTS = {
     weight: 'weight'
   },
   alpha: 0.85,
-  maximumIterations: 100,
+  maxIterations: 100,
   tolerance: 1e-6,
   weighted: true
 };
@@ -49,17 +49,16 @@ function abstractPagerank(assign, graph, options) {
 
   options = defaults(options, DEFAULTS);
 
-  var pagerankAttribute = options.pagerank,
-      weightAttribute = options.weight,
+  var pagerankAttribute = options.attributes.pagerank,
+      weightAttribute = options.attributes.weight,
       alpha = options.alpha,
       maxIterations = options.maxIterations,
       tolerance = options.tolerance,
       weighted = options.weighted;
 
   var N = graph.order,
-      RN = 1 / N,
-      x = {},
-      p = {};
+      p = 1 / N,
+      x = {};
 
   var danglingNodes = [];
 
@@ -84,10 +83,9 @@ function abstractPagerank(assign, graph, options) {
   // Initialization
   for (i = 0; i < N; i++) {
     n = nodes[i];
-    x[n] = RN;
-    p[n] = RN;
+    x[n] = p;
 
-    d = graph.undirectedDegree(n) + graph.undirectedDegree(n);
+    d = graph.undirectedDegree(n) + graph.outDegree(n);
 
     if (d === 0)
       danglingNodes.push(n);
@@ -107,8 +105,9 @@ function abstractPagerank(assign, graph, options) {
   // Performing the power iterations
   while (iteration < maxIterations) {
     xLast = x;
+    x = {};
 
-    for (k in x)
+    for (k in xLast)
       x[k] = 0;
 
     dangleSum = 0;
@@ -130,7 +129,7 @@ function abstractPagerank(assign, graph, options) {
         x[neighbor] += alpha * xLast[n] * weights[e];
       }
 
-      x[n] += dangleSum + (1 - alpha);
+      x[n] += dangleSum * p + (1 - alpha) * p;
     }
 
     // Checking convergence
@@ -148,6 +147,8 @@ function abstractPagerank(assign, graph, options) {
 
       return x;
     }
+
+    iteration++;
   }
 
   throw Error('graphology-pagerank: failed to converge.');
