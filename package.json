@@ -33,7 +33,7 @@
     "@yomguithereal/eslint-config": "^4.0.0",
     "chai": "^4.1.2",
     "eslint": "^4.18.2",
-    "graphology": "^0.11.2",
+    "graphology": "~0.11.3",
     "graphology-generators": "^0.9.0",
     "mocha": "^5.0.4"
   },
