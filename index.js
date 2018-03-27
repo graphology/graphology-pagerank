@@ -22,7 +22,7 @@ var DEFAULTS = {
   alpha: 0.85,
   maxIterations: 100,
   tolerance: 1e-6,
-  weighted: true
+  weighted: false
 };
 
 /**
@@ -63,8 +63,9 @@ function abstractPagerank(assign, graph, options) {
   var danglingNodes = [];
 
   var nodes = graph.nodes(),
-      edges = graph.edges(),
+      edges,
       weights = {},
+      degrees = {},
       weight,
       iteration = 0,
       dangleSum,
@@ -85,20 +86,42 @@ function abstractPagerank(assign, graph, options) {
     n = nodes[i];
     x[n] = p;
 
-    d = graph.undirectedDegree(n) + graph.outDegree(n);
+    if (weighted) {
+
+      // Here, we need to factor in edges' weight
+      d = 0;
+
+      edges = graph
+        .undirectedEdges()
+        .concat(graph.outEdges(n));
+
+      for (j = 0, m = edges.length; j < m; j++) {
+        e = edges[j];
+        d += graph.getEdgeAttribute(e, weightAttribute) || 1;
+      }
+    }
+    else {
+      d = graph.undirectedDegree(n) + graph.outDegree(n);
+    }
+
+    degrees[n] = d;
 
     if (d === 0)
       danglingNodes.push(n);
   }
 
   // Precompute normalized edge weights
+  edges = graph.edges();
   for (i = 0, l = graph.size; i < l; i++) {
     e = edges[i];
     n = graph.source(e);
-    d = graph.undirectedDegree(n) + graph.outDegree(n);
+
+    d = degrees[n];
+
     weight = weighted ?
       (graph.getEdgeAttribute(e, weightAttribute) || 1) :
       1;
+
     weights[e] = weight / d;
   }
 

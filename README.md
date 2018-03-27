@@ -35,5 +35,5 @@ const p = pagerank(graph, {alpha: 0.9, weighted: false})
   * **alpha** *?number* [`0.85`]: damping parameter of the algorithm.
   * **maxIterations** *?number* [`100`]: maximum number of iterations to perform.
   * **tolerance** *?number* [`1.e-6`]: convergence error tolerance.
-  * **weighted** *?boolean* [`true`]: whether to use available weights or not.
+  * **weighted** *?boolean* [`false`]: whether to use available weights or not.
 

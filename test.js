@@ -85,4 +85,36 @@ describe('graphology-pagerank', function() {
       pagerank(graph, {maxIterations: 0});
     }, /converge/);
   });
+
+  it('should work with a weighted graph.', function() {
+    var graph = new DirectedGraph();
+    graph.mergeEdge('A', 'B', {weight: 0.5});
+    graph.mergeEdge('A', 'C', {weight: 0.5});
+
+    var p = pagerank(graph, {weighted: false});
+
+    var unweighted = {
+      A: 0.25974,
+      B: 0.37013,
+      C: 0.37013
+    };
+
+    var weighted = {
+      A: 0.25974,
+      B: 0.33333,
+      C: 0.40693
+    };
+
+    deepApproximatelyEqual(p, unweighted, 1e-3);
+
+    p = pagerank(graph, {weighted: true});
+
+    deepApproximatelyEqual(p, unweighted, 1e-3);
+
+    graph.setEdgeAttribute('A', 'C', 'weight', 1);
+
+    p = pagerank(graph, {weighted: true});
+
+    deepApproximatelyEqual(p, weighted, 1e-3);
+  });
 });
